@@ -6,7 +6,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 // import { CreateOrderDto, OrderPaginationDto, StatusDto } from './dto';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common';
-import { CreateOrderDto } from './dto';
+import { CreateOrderDto, OrderPaginationDto } from './dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -20,17 +20,17 @@ export class OrdersController {
     return this.ordersClient.send('createOrder', createOrderDto);
   }
 
-  @Get()
-  findAll(){
-    return this.ordersClient.send('findAllOrders', {})
-  }
+  // @Get()
+  // findAll(){
+  //   return this.ordersClient.send('findAllOrders', {})
+  // }
 
   // @Get(':id')
   // findOne(@Param('id',ParseUUIDPipe) id: string){
   //   return this.ordersClient.send('findOneOrder', {id})
   // }
 
-    @Get(':id')
+  @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe ) id: string) {
     try {
       const order = await firstValueFrom(
@@ -49,10 +49,10 @@ export class OrdersController {
   //   return this.ordersClient.send('createOrder', createOrderDto);
   // }
 
-  // @Get()
-  // findAll( @Query() orderPaginationDto: OrderPaginationDto ) {
-  //   return this.ordersClient.send('findAllOrders', orderPaginationDto);
-  // }
+  @Get()
+  findAll( @Query() orderPaginationDto: OrderPaginationDto ) {
+    return this.ordersClient.send('findAllOrders', orderPaginationDto);
+  }
   
   // @Get('id/:id')
   // async findOne(@Param('id', ParseUUIDPipe ) id: string) {
