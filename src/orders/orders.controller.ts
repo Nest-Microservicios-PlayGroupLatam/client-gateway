@@ -6,7 +6,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 // import { CreateOrderDto, OrderPaginationDto, StatusDto } from './dto';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from 'src/common';
-import { CreateOrderDto, OrderPaginationDto } from './dto';
+import { CreateOrderDto, OrderPaginationDto, StatusDto } from './dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -30,31 +30,7 @@ export class OrdersController {
   //   return this.ordersClient.send('findOneOrder', {id})
   // }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe ) id: string) {
-    try {
-      const order = await firstValueFrom(
-        this.ordersClient.send('findOneOrder', { id })
-      );
-
-      return order;
-
-    } catch (error) {
-      throw new RpcException(error);
-    }
-  }
-
-  // @Post()
-  // create(@Body() createOrderDto: CreateOrderDto) {
-  //   return this.ordersClient.send('createOrder', createOrderDto);
-  // }
-
-  @Get()
-  findAll( @Query() orderPaginationDto: OrderPaginationDto ) {
-    return this.ordersClient.send('findAllOrders', orderPaginationDto);
-  }
-  
-  // @Get('id/:id')
+  // @Get(':id')
   // async findOne(@Param('id', ParseUUIDPipe ) id: string) {
   //   try {
   //     const order = await firstValueFrom(
@@ -68,22 +44,46 @@ export class OrdersController {
   //   }
   // }
 
-  // @Get(':status')
-  // async findAllByStatus(
-  //   @Param() statusDto: StatusDto,
-  //   @Query() paginationDto: PaginationDto,
-  // ) {
-  //   try {
-
-  //     return this.ordersClient.send('findAllOrders', {
-  //       ...paginationDto,
-  //       status: statusDto.status,
-  //     });
-
-  //   } catch (error) {
-  //     throw new RpcException(error);
-  //   }
+  // @Post()
+  // create(@Body() createOrderDto: CreateOrderDto) {
+  //   return this.ordersClient.send('createOrder', createOrderDto);
   // }
+
+  @Get()
+  findAll( @Query() orderPaginationDto: OrderPaginationDto ) {
+    return this.ordersClient.send('findAllOrders', orderPaginationDto);
+  }
+  
+  @Get('id/:id')
+  async findOne(@Param('id', ParseUUIDPipe ) id: string) {
+    try {
+      const order = await firstValueFrom(
+        this.ordersClient.send('findOneOrder', { id })
+      );
+
+      return order;
+
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @Get(':status')
+  async findAllByStatus(
+    @Param() statusDto: StatusDto,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    try {
+
+      return this.ordersClient.send('findAllOrders', {
+        ...paginationDto,
+        status: statusDto.status,
+      });
+
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
 
 
   // @Patch(':id')
