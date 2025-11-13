@@ -25,9 +25,23 @@ export class OrdersController {
     return this.ordersClient.send('findAllOrders', {})
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string){
-    return this.ordersClient.send('findOneOrder', {id})
+  // @Get(':id')
+  // findOne(@Param('id',ParseUUIDPipe) id: string){
+  //   return this.ordersClient.send('findOneOrder', {id})
+  // }
+
+    @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe ) id: string) {
+    try {
+      const order = await firstValueFrom(
+        this.ordersClient.send('findOneOrder', { id })
+      );
+
+      return order;
+
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
   // @Post()
